@@ -10,16 +10,16 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 client = commands.Bot(command_prefix="!")
 
-# Contient tout les différentes parti avec comme identitfiant l'id du premier message envoyer
-# Permet de gérer plusieurs parti en meme temps avec différentes personnes
+# Contient toutes les différentes parties avec comme identitfiant l'id du premier message envoyé 
+# Permet de gérer plusieurs parties en même temps avec différentes personnes
 
 games = {}
 emoji = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣']
 help_message = """
 `!p4` *(Lance une parti de puissance 4)*
-`!p4 bot/b` *(Lance une parti de puissance 4 avec un ordinateur)*
-`!p4 surrender/s` *(permet d'adandonner la partie en cours)*
-`!p4 jeton/j <emoji>` *(permet de customizer son jeton)*
+`!p4 bot/b` *(Lance une partie de puissance 4 avec un ordinateur)*
+`!p4 surrender/s` *(permet d'abandonner la partie en cours)*
+`!p4 jeton/j <emoji>` *(permet de customiser son jeton)*
 """
 
 def isEmoji(char):
@@ -72,7 +72,7 @@ async def checkHasAGame(name):
 
 async def addGame(ctx, use_bot):
     if not await checkHasAGame(ctx.message.author.name):
-        # on initialize le jeu et on ajoute le nom des joueurs 
+        # On initialise le jeu et on ajoute le nom des joueurs 
         game = Power4()
         game.p1 = ctx.message.author.id
         game.p1_name = ctx.message.author.name
@@ -93,7 +93,7 @@ async def addGame(ctx, use_bot):
         msg = await ctx.send(game.getGrid())
         games[msg.id] = game
 
-        # on ajoute les controlles avec les réaction
+        # on ajoute les contrôles avec les réactions
         for i in range(0, 7):
             await msg.add_reaction(emoji[i])
     else:
@@ -138,13 +138,13 @@ async def p4(ctx: commands.Context, *args):
 @client.event
 async def on_reaction_add(reaction, user):
 
-    # le bot ne réagi pas a ces propres reactions logique
+    # le bot ne réagit pas a ses propres réactions logiquement
     if not user.bot:
 
-        # on recupere l'instance de la parti avec l'id du message original
+        # on récupère l'instance de la partie avec l'id du message original
         game = getGame(reaction.message.id)
 
-        # si le joueurs 2 n'est pas défini on ajoute celui qui a réagi au message
+        # si le joueur 2 n'est pas défini on ajoute celui qui a réagi au message
         if(user.id != game.p1 and game.p2 == ""):
             game.p2 = user.id
             game.p2_name = user.name
@@ -156,7 +156,7 @@ async def on_reaction_add(reaction, user):
                 if user.name in r:
                     game.p2_color = r[-2]
 
-        # test des différents controlle
+        # test des différents contrôles
         for i in range(0, 7):
             if reaction.emoji == emoji[i]:
                 if(game.turn):
@@ -172,14 +172,15 @@ async def on_reaction_add(reaction, user):
                     # on ajoute un jeton pour p2
                     game.addTokenPlayerTwo(user.id, i)
 
-                # on modifie la grille et on retire la reaction
+                # on modifie la grille et on retire la réaction
                 await reaction.message.edit(content=game.getGrid())
                 await reaction.message.remove_reaction(emoji[i], user)
         
-        # si gagner on enleve les controlles
+        # si gagné on enlève les contrôles
         if(game.win != 0):
             del games[reaction.message.id]
             for i in range(0,7):
                 await reaction.message.remove_reaction(emoji[i], reaction.message.author)
 
 client.run(TOKEN)
+                                                      
