@@ -14,14 +14,14 @@ class Power4:
         self.p2_name = "?????"
         self.win = 0
 
-        # selection aléatoire de couleurs pour les joueurs
+        # sélection aléatoire de couleurs pour les joueurs
         color = ['🔴', '🟠', '🟡', '🟢', '🔵', '🟣']
         self.p1_color = color[randrange(len(color))]
         self.p2_color = color[randrange(len(color))]
         while(self.p1_color == self.p2_color):
             self.p2_color = color[randrange(len(color))]
 
-        # creation de la grille
+        # création de la grille
         self.grid = []
         for i in range(0, 7):
             self.grid.append([0,0,0,0,0,0,0])
@@ -62,9 +62,9 @@ class Power4:
                 elif self.turn == True: 
                     self.turn = False
 
-    # vérifie les collonnes horizontalement, verticalement et les diagonales
-    # on ajoute chaque case a une chaine de charactères et on vérifie si elle contient '1111' ou '2222'
-    # si c'est le cas c'est qu'il y a 4 jeton aligner et on renvoit le joueur qui a gagner
+    # vérifie les colonnes horizontalement, verticalement et les diagonales
+    # on ajoute chaque case à une chaine de caractères et on vérifie si elle contient '1111' ou '2222'
+    # si c'est le cas c'est qu'il y a 4 jeton alignés et on renvoie le joueur qui a gagner
     def verifWin(self):
 
         # Vertical
@@ -127,7 +127,7 @@ class Power4:
             elif "2222" in row:
                 return 2
 
-        # recupère la ligne du haut si elle est complete renvoit le code pour égalité
+        # récupère la ligne du haut si elle est complète renvoie le code pour égalité
         row = ""
         for i in range(0, 7):
             row += str(self.grid[0][i])
@@ -150,7 +150,7 @@ class Power4:
 
         s = ""
 
-        # remplisage de la grille avec les jetons
+        # remplissage de la grille avec les jetons
         for i in range(0, 7):
             for j in range(0, 7):
                 if(self.grid[i][j] == 1):
@@ -208,14 +208,14 @@ class Power4:
         player = 2
         if self.turn: player = 1
 
-        # envoie de la requete
+        # envoie de la requête
         url = "http://kevinalbs.com/connect4/back-end/index.php/getMoves?board_data=" + data + "&player=" + str(player)
 
         # transformation de <byte> a json
         res = requests.post(url).content.decode("utf-8") 
         data = json.loads(res)
 
-        # on récupère la collones avec la valeur la plus élever (c'est le coup a jouer)
+        # on récupère la colonne avec la valeur la plus élevée (c'est le coup à jouer)
         max = data['0']
         index_max = 0
         for i in data:
@@ -223,5 +223,5 @@ class Power4:
                 max = data[i]
                 index_max = i
 
-        # et on renvoit le coup
+        # et on renvoie le coup
         return int(index_max);
